@@ -1,6 +1,6 @@
+import tensorflow as tf
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
-import tensorflow as tf
 
 def baby0():
 	node1 = tf.constant(3.0, dtype = tf.float32)
@@ -31,12 +31,12 @@ def SLP(x_train, y_train):
 
 	# input and output
 	x = tf.placeholder(tf.float32)
-	linear_model = W*x + b
+	y = W*x + b
 	# Desired value
-	y = tf.placeholder(tf.float32) 
+	d = tf.placeholder(tf.float32) 
 
 	# loss
-	loss = tf.reduce_sum(tf.square(linear_model - y))
+	loss = tf.reduce_sum(tf.square(y - d))
 	
 	# optimizer	
 	optimizer = tf.train.GradientDescentOptimizer(learning_rate = 0.01)
@@ -49,20 +49,20 @@ def SLP(x_train, y_train):
 
 	# training loop
 	for i in range(1000):
-		sess.run(train, {x: x_train, y: y_train})
+		sess.run(train, {x: x_train, d: y_train})
 
 	# final accuracy
-	curr_W, curr_b, curr_loss = sess.run([W,b,loss], {x: x_train, y: y_train})
+	curr_W, curr_b, curr_loss = sess.run([W,b,loss], {x: x_train, d: y_train})
 	print("W: %s b: %s loss: %s"%(curr_W, curr_b, curr_loss))
 
 
-	def predict(x_test = x_train, y_test= y_train):
+	def eval_perform(x_test = x_train, y_test= y_train):
 		# change W,b to trained value
 		fixW = tf.assign(W, curr_W)
 		fixb = tf.assign(b, curr_b)
 		sess.run([fixW, fixb])
-		print(sess.run(loss, {x: x_test, y: y_test}))
-	# predict()
+		print(sess.run(loss, {x: x_test, d: y_test}))
+	# eval_perform()
 
 if __name__ == "__main__":
 	x_train = [1,2,3,4]
