@@ -6,8 +6,10 @@ os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
 # defines what to predict, loss function, optimizer
 def model_fn(features, labels, mode):
 	# Build linear model and output
-	W = tf.get_variable("W", [1], tf.float64)
+	W = tf.get_variable(name = "W", shape=[1], dtype=tf.float64)
 	b = tf.get_variable("b", [1], tf.float64)
+	# tf.get_variable(name = "xx")
+	print(W)
 	y = W*features['x'] + b
 
 	# Loss subgraph

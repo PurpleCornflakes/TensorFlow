@@ -24,14 +24,14 @@ def baby1():
 	sess = tf.Session()
 	print(sess.run(c,{a:3, b:4}))
 
-def SLP(x_train, y_train):
+def linear_regression(x_train, y_train):
 	# parameters: not initialized yet
-	W = tf.Variable([0.3], tf.float32)
+	W = tf.Variable([0.3], tf.float32,name = "xiaoll")
 	b = tf.Variable([-0.3], tf.float32)
-
 	# input and output
-	x = tf.placeholder(tf.float32)
-	y = W*x + b
+	x = tf.placeholder(tf.float32, name = "xiaocc")
+	y = tf.add(W*x, b)
+
 	# Desired value
 	d = tf.placeholder(tf.float32) 
 
@@ -44,27 +44,27 @@ def SLP(x_train, y_train):
 
 	# start a session and initialize
 	sess = tf.Session()
+	# a handle to initialize all global variables
 	init = tf.global_variables_initializer()
 	sess.run(init)
-
 	# training loop
 	for i in range(1000):
 		sess.run(train, {x: x_train, d: y_train})
-
 	# final accuracy
+	print(sess.run(loss,{x: x_train, d: y_train}))
 	curr_W, curr_b, curr_loss = sess.run([W,b,loss], {x: x_train, d: y_train})
 	print("W: %s b: %s loss: %s"%(curr_W, curr_b, curr_loss))
 
 
-	def eval_perform(x_test = x_train, y_test= y_train):
-		# change W,b to trained value
-		fixW = tf.assign(W, curr_W)
-		fixb = tf.assign(b, curr_b)
+	def test_model(x_test = x_train, y_test= y_train):
+		# fixW is a TensorNode to change W to trained value
+		fixW = tf.assign(W, [1])
+		fixb = tf.assign(b, [-1])
 		sess.run([fixW, fixb])
 		print(sess.run(loss, {x: x_test, d: y_test}))
-	# eval_perform()
+	test_model()
 
 if __name__ == "__main__":
 	x_train = [1,2,3,4]
 	y_train = [0,-1,-2,-3]
-	SLP(x_train, y_train)
+	linear_regression(x_train, y_train)
